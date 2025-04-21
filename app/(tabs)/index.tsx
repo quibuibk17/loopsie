@@ -1,74 +1,117 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, ScrollView, Pressable, Dimensions } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const { height, width } = Dimensions.get("window");
+const HEADER_HEIGHT = height * 0.45;
 
-export default function HomeScreen() {
+export default function Home() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+    <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+      <StatusBar style="light" translucent />
+      {/* Header Image */}
+      <View style={{ height: HEADER_HEIGHT}}>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={require("../../assets/images/homescreen/man_origin.png")}
+          style={{ width: "100%", height: "100%" }}
+          resizeMode="cover"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+
+        {/* Overlayed Content */}
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 16,
+          }}
+        >
+          <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", marginBottom: 0 }}>
+            OLD SCHOOL
+          </Text>
+          <Text style={{ color: "white", fontSize: 32, fontWeight: "bold", marginBottom: 0 }}>
+            ANIME
+          </Text>
+          <Text style={{ color: "white", fontSize: 14, marginBottom: 180 }}>
+            昔ながらのアニメ
+          </Text>
+
+          <Pressable
+            style={{
+              backgroundColor: "white",
+              paddingHorizontal: 24,
+              paddingVertical: 12,
+              borderRadius: 30,
+            }}
+          >
+            <Text style={{ color: "black", fontWeight: "600" }}>Create</Text>
+          </Pressable>
+        </View>
+      </View>
+
+      {/* AI Photo Gallery */}
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
+        <Text style={{ color: "#A855F7", fontWeight: "600", fontSize: 12 }}>EXCLUSIVE</Text>
+        <Text style={{ color: "white", fontSize: 24, fontWeight: "bold", marginBottom: 12 }}>
+          AI Photo 📷
+        </Text>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <Image
+            source={require("../../assets/images/homescreen/man_converted.png")}
+            style={{
+              width: width * 0.4,
+              height: "100%",
+              marginRight: 16,
+              borderRadius: 12,
+            }}
+            resizeMode="cover"
+          />
+          <Image
+            source={require("../../assets/images/homescreen/girl_converted.png")}
+            style={{
+              width: width * 0.4,
+              height: "100%",
+              marginRight: 16,
+              borderRadius: 12,
+            }}
+            resizeMode="cover"
+          />
+          <Image
+            source={require("../../assets/images/homescreen/girl2_converted.png")}
+            style={{
+              width: width * 0.4,
+              height: "100%",
+              marginRight: 16,
+              borderRadius: 12,
+            }}
+            resizeMode="cover"
+          />
+        </ScrollView>
+      </View>
+
+      {/* Bottom Navigation */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: "black",
+          flexDirection: "row",
+          justifyContent: "space-around",
+          paddingVertical: 16,
+          borderTopColor: "#333",
+          borderTopWidth: 1,
+        }}
+      >
+      </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
