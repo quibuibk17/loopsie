@@ -21,11 +21,64 @@ const headerImages = [
   require("../../assets/images/homescreen/header/girls_converted.png"),
 ];
 
+function GalleryItem({ images }: { images: any[] }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [current, setCurrent] = useState(0);
+  const [next, setNext] = useState(1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fadeAnim.setValue(0);
+      const nextIndex = (current + 1) % images.length;
+      setNext(nextIndex);
+
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }).start(() => {
+        setCurrent(nextIndex);
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [current]);
+
+  return (
+    <View
+      style={{
+        width: width * 0.4,
+        height: width * 0.6,
+        marginRight: 16,
+        borderRadius: 12,
+        overflow: "hidden",
+      }}
+    >
+      <RNImage
+        source={images[current]}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
+        resizeMode="cover"
+      />
+
+      <Animated.Image
+        source={images[next]}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          opacity: fadeAnim,
+        }}
+        resizeMode="cover"
+      />
+    </View>
+  );
+}
+
+
 export default function Home() {
-  const fadeAnim = useRef(new Animated.Value(1)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState(1);
-
+  const fadeAnim = useRef(new Animated.Value(1)).current;
   const animateDissolve = () => {
     fadeAnim.setValue(0);
     Animated.timing(fadeAnim, {
@@ -34,7 +87,6 @@ export default function Home() {
       useNativeDriver: true,
     }).start();
   };
-
   useEffect(() => {
     const interval = setInterval(() => {
       const newIndex = (currentIndex + 1) % headerImages.length;
@@ -115,38 +167,27 @@ export default function Home() {
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <RNImage
-            source={require("../../assets/images/homescreen/gallery/man_converted.png")}
-            style={{
-              width: width * 0.4,
-              height: "100%",
-              marginRight: 16,
-              borderRadius: 12,
-            }}
-            resizeMode="cover"
+          <GalleryItem
+            images={[
+              require("../../assets/images/homescreen/gallery/man_origin.png"),
+              require("../../assets/images/homescreen/gallery/man_converted.png"),
+            ]}
           />
-          <RNImage
-            source={require("../../assets/images/homescreen/gallery/girl_converted.png")}
-            style={{
-              width: width * 0.4,
-              height: "100%",
-              marginRight: 16,
-              borderRadius: 12,
-            }}
-            resizeMode="cover"
+          <GalleryItem
+            images={[
+              require("../../assets/images/homescreen/gallery/girl_origin.png"),
+              require("../../assets/images/homescreen/gallery/girl_converted.png"),
+            ]}
           />
-          <RNImage
-            source={require("../../assets/images/homescreen/gallery/girl2_converted.png")}
-            style={{
-              width: width * 0.4,
-              height: "100%",
-              marginRight: 16,
-              borderRadius: 12,
-            }}
-            resizeMode="cover"
+          <GalleryItem
+            images={[
+              require("../../assets/images/homescreen/gallery/girl2_origin.png"),
+              require("../../assets/images/homescreen/gallery/girl2_converted.png"),
+            ]}
           />
         </ScrollView>
       </View>
+
 
       {/* Bottom Navigation */}
       <View
