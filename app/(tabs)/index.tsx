@@ -1,11 +1,19 @@
-import { View, Text, Image, ScrollView, Pressable, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  Dimensions,
+  Animated,
+  Image as RNImage,
+} from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useRef, useEffect, useState } from "react";
-import { FlatList } from "react-native";
 
 const { height, width } = Dimensions.get("window");
 const HEADER_HEIGHT = height * 0.45;
+
 const headerImages = [
   require("../../assets/images/homescreen/header/2girls_origin.png"),
   require("../../assets/images/homescreen/header/2girls_converted.png"),
@@ -13,43 +21,55 @@ const headerImages = [
   require("../../assets/images/homescreen/header/girls_converted.png"),
 ];
 
-
 export default function Home() {
-  const insets = useSafeAreaInsets();
-  const flatListRef = useRef(null);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [nextIndex, setNextIndex] = useState(1);
+
+  const animateDissolve = () => {
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
-      const nextIndex = (currentIndex + 1) % headerImages.length;
-      flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
-      setCurrentIndex(nextIndex);
-    }, 1000); // change every 1s
-  
+      const newIndex = (currentIndex + 1) % headerImages.length;
+      setNextIndex(newIndex);
+      animateDissolve();
+      setTimeout(() => setCurrentIndex(newIndex), 800);
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, [currentIndex]);  
+  }, [currentIndex]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar style="light" translucent />
-      {/* Header Image */}
-      <View style={{ height: HEADER_HEIGHT}}>
-        <FlatList
-        ref={flatListRef}
-        data={headerImages}
-        horizontal
-        pagingEnabled
-        scrollEnabled={false}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Image
-            source={item}
-            style={{ width, height: HEADER_HEIGHT }}
-            resizeMode="cover"
-          />
-        )}
-      />
 
-        {/* Overlayed Content */}
+      {/* Header with dissolve effect only */}
+      <View style={{ height: HEADER_HEIGHT }}>
+        <RNImage
+          source={headerImages[currentIndex]}
+          style={{ width, height: HEADER_HEIGHT, position: "absolute" }}
+          resizeMode="cover"
+        />
+
+        <Animated.Image
+          source={headerImages[nextIndex]}
+          style={{
+            width,
+            height: HEADER_HEIGHT,
+            position: "absolute",
+            opacity: fadeAnim,
+          }}
+          resizeMode="cover"
+        />
+
+        {/* Overlayed Text & Button */}
         <View
           style={{
             position: "absolute",
@@ -85,6 +105,8 @@ export default function Home() {
         </View>
       </View>
 
+
+
       {/* AI Photo Gallery */}
       <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 16 }}>
         <Text style={{ color: "#A855F7", fontWeight: "600", fontSize: 12 }}>EXCLUSIVE</Text>
@@ -93,7 +115,7 @@ export default function Home() {
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <Image
+          <RNImage
             source={require("../../assets/images/homescreen/gallery/man_converted.png")}
             style={{
               width: width * 0.4,
@@ -103,7 +125,7 @@ export default function Home() {
             }}
             resizeMode="cover"
           />
-          <Image
+          <RNImage
             source={require("../../assets/images/homescreen/gallery/girl_converted.png")}
             style={{
               width: width * 0.4,
@@ -113,7 +135,7 @@ export default function Home() {
             }}
             resizeMode="cover"
           />
-          <Image
+          <RNImage
             source={require("../../assets/images/homescreen/gallery/girl2_converted.png")}
             style={{
               width: width * 0.4,
@@ -140,8 +162,7 @@ export default function Home() {
           borderTopColor: "#333",
           borderTopWidth: 1,
         }}
-      >
-      </View>
+      />
     </SafeAreaView>
   );
 }
