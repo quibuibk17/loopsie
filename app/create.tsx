@@ -1,8 +1,9 @@
 // app/create.tsx
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CreateScreen() {
   const router = useRouter();
@@ -23,80 +24,65 @@ export default function CreateScreen() {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'black', padding: 20 }}>
-      <Image
-        source={require('../assets/images/homescreen/header/girls_origin.png')} // or remote image URL
-        style={{ width: '100%', height: 400, borderRadius: 20 }}
-        resizeMode="cover"
-      />
-      <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginVertical: 10 }}>
-        Old School Anime AI
-      </Text>
-      <Text style={{ color: 'gray', textAlign: 'center' }}>
-        It works best with vertical portrait photos of a person 😉
-      </Text>
-
-      <TouchableOpacity
-        onPress={handlePickImage}
-        style={{
-          backgroundColor: 'white',
-          borderRadius: 999,
-          paddingVertical: 10,
-          paddingHorizontal: 30,
-          alignSelf: 'center',
-          marginTop: 20,
-        }}
-      >
-        <Text style={{ fontWeight: 'bold' }}>Import</Text>
+    <View style={styles.safeArea}>
+      {/* Back button */}
+      <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}>
+        <Ionicons name="chevron-back" size={28} color="white" />
       </TouchableOpacity>
+
+      <View style={styles.container}>
+        <Image
+          source={require('../assets/images/homescreen/header/girls_origin.png')}
+          style={styles.image}
+          resizeMode="cover"
+        />
+
+        <Text style={styles.title}>Old School Anime AI</Text>
+        <Text style={styles.subtitle}>
+          It works best with vertical portrait photos of a person 😉
+        </Text>
+
+        <TouchableOpacity onPress={handlePickImage} style={styles.importButton}>
+          <Text style={styles.importText}>Import</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-export default CreateScreen;
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#1E293B', // Softer modern deep blue background
+    paddingTop: Platform.OS === 'ios' ? 60 : 30,
   },
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  backText: {
-    color: 'white',
-    fontSize: 16,
-    marginLeft: 4,
-  },
-  card: {
-    flex: 1,
-    borderRadius: 16,
-    backgroundColor: '#1c1c1e',
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 60 : 30,
+    left: 20,
+    zIndex: 10,
   },
   image: {
     width: '100%',
     height: Dimensions.get('window').height * 0.45,
-    borderRadius: 12,
+    borderRadius: 16,
   },
   title: {
     marginTop: 20,
     fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
+    textAlign: 'center',
   },
   subtitle: {
     marginTop: 10,
     fontSize: 16,
-    color: 'gray',
+    color: '#CBD5E1', // light gray-blue
     textAlign: 'center',
   },
   importButton: {
@@ -105,6 +91,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 32,
+    alignSelf: 'center',
   },
   importText: {
     color: 'black',
