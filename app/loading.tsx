@@ -1,9 +1,7 @@
-// app/loading.tsx
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { View, Text, ImageBackground, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
-import * as FileSystem from 'expo-file-system';
 
 export default function LoadingScreen() {
   const { uri } = useLocalSearchParams<{ uri: string }>();
@@ -17,18 +15,21 @@ export default function LoadingScreen() {
           uri,
           name: 'photo.jpg',
           type: 'image/jpeg',
-        } as any); // `as any` to bypass TypeScript issues with FormData in RN
+        } as any);
 
-        formData.append('prompt', 'Anime style portrait...'); // optional, or use default
+        formData.append('prompt', 'Anime style portrait...');
 
-        const response = await axios.post('https://3dfe-34-19-62-158.ngrok-free.app/generate', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          responseType: 'blob',
-        });
+        const response = await axios.post(
+          'https://3dfe-34-19-62-158.ngrok-free.app/generate',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            responseType: 'blob',
+          }
+        );
 
-        // Save to local file
         const blob = response.data;
         const base64 = await blobToBase64(blob);
         router.push({
@@ -36,9 +37,21 @@ export default function LoadingScreen() {
           params: { base64 },
         });
       } catch (err) {
-        console.error('Failed to generate image', err);
-        Alert.alert('Error', 'Something went wrong');
-      }
+        // You can log it silently if needed, or just remove this line
+        // console.error('Failed to generate image', err);  ← REMOVE THIS
+      
+        Alert.alert(
+          'Generation Failed',
+          'Something went wrong while generating the image.',
+          [
+            {
+              text: 'OK',
+              onPress: () => router.replace('/create'),
+            },
+          ],
+          { cancelable: false }
+        );
+      }      
     };
 
     generateImage();
@@ -51,7 +64,9 @@ export default function LoadingScreen() {
       blurRadius={2}
     >
       <ActivityIndicator size="large" color="white" />
-      <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>Processing...</Text>
+      <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>
+        Processing...
+      </Text>
     </ImageBackground>
   );
 }
