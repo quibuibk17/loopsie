@@ -10,6 +10,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useRef, useEffect, useState } from "react";
+import { useRouter } from 'expo-router';
 
 const { height, width } = Dimensions.get("window");
 const HEADER_HEIGHT = height * 0.45;
@@ -87,6 +88,7 @@ export default function Home() {
       useNativeDriver: true,
     }).start();
   };
+  const router = useRouter();
   useEffect(() => {
     const interval = setInterval(() => {
       const newIndex = (currentIndex + 1) % headerImages.length;
@@ -151,6 +153,7 @@ export default function Home() {
               paddingVertical: 12,
               borderRadius: 30,
             }}
+            onPress={() => router.push('/create')}
           >
             <Text style={{ color: "black", fontWeight: "600" }}>Create</Text>
           </Pressable>

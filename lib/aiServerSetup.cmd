@@ -1,0 +1,1 @@
+!pip install pyngrok flask diffusers transformers accelerate torch torchvision --upgrade
